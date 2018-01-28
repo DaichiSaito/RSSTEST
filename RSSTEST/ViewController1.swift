@@ -14,18 +14,20 @@ class ViewController1: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var array = [Any]()
+    var array = [Feed]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.dataSource = self
         self.tableView.delegate = self
+        self.tableView.estimatedRowHeight = 1000
+        self.tableView.rowHeight = UITableViewAutomaticDimension
 
         fetchRSS(url: "http://golf1000.blog23.fc2.com/?xml")
-//        fetchRSS(url: "http://www.analyze2005.com/mkblogneo/?feed=rss2")
-//        fetchRSS(url: "http://blog.secret-golf.com/index.rdf")
-//        fetchRSS(url: "http://rssblog.ameba.jp/crenshaw2/rss20.xml")
-//        fetchRSS(url: "http://rssblog.ameba.jp/50shoulder/rss20.xml")
+        fetchRSS(url: "http://www.analyze2005.com/mkblogneo/?feed=rss2")
+        fetchRSS(url: "http://blog.secret-golf.com/index.rdf")
+        fetchRSS(url: "http://rssblog.ameba.jp/crenshaw2/rss20.xml")
+        fetchRSS(url: "http://rssblog.ameba.jp/50shoulder/rss20.xml")
         
     }
 
@@ -42,7 +44,10 @@ class ViewController1: UIViewController {
 //            print("Response: \(String(describing: response.response))") // http url response
 //            print("Result: \(response.result)")                         // response serialization result
             
-            
+            var title: String!
+            var imagePath: String?
+            var link: String!
+            var createdAt: Date!
             if let dict = response.result.value as? NSDictionary {
                 
                 guard let query = dict["query"] as? NSDictionary else {
@@ -57,19 +62,64 @@ class ViewController1: UIViewController {
                     return
                 }
                 items.forEach {
-//                    print(($0 as! NSDictionary)["title"] as! String)
-                    print(($0 as! NSDictionary)["encoded"])
-                    let xml = "<myTag>" + (($0 as! NSDictionary)["encoded"] as! String) + "</myTag>"
-                    if let doc: XMLDocument = try! Kanna.XML(xml: xml, encoding: .utf8) {
+                    title = ($0 as! NSDictionary)["title"] as! String
+                    link = ($0 as! NSDictionary)["link"] as! String
+//                    var date = ($0 as! NSDictionary)["db:date"] as? Date
+//                    var creater = ($0 as! NSDictionary)["db:publisher"] as? String
+//                    print(($0 as! NSDictionary))
+                    
+                    if let date = ($0 as! NSDictionary)["pubDate"] as? String {
+//                        print(date)
+                        let dateFormatter = DateFormatter()
+                        // 書式が変わらない固定ロケールで一度値を取得
+                        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                        dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss ZZZZ"
+                        let r_date = dateFormatter.date(from: date)
                         
-//                        doc.xpath("//*/img[1]div[@id='content']/div[@id='bodyContent']/div[@id='mw-content-text']")
-                        let node = doc.css("img[src]").first
-                        print(node?["src"])
+                        if let d = r_date {
+                            // ロケールを日本語にして曜日を取得
+                            dateFormatter.locale = Locale(identifier: "ja_JP")
+                            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+//                            print(dateFormatter.string(from: d))
+//                            createdAt = dateFormatter.string(from: d)
+                            createdAt = dateFormatter.date(from: dateFormatter.string(from: d))
+//                            tmpEntry.addObject(dateFormatter.stringFromDate(d))
+                        }
+                        
+                    } else if let date = ($0 as! NSDictionary)["date"] as? String {
+//                        print(date)
+                        let dateFormatter = DateFormatter()
+                        // 書式が変わらない固定ロケールで一度値を取得
+                        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+                        let r_date = dateFormatter.date(from: date)
+                        
+                        if let d = r_date {
+                            // ロケールを日本語にして曜日を取得
+                            dateFormatter.locale = Locale(identifier: "ja_JP")
+                            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+                            print(dateFormatter.string(from: d))
+                            createdAt = dateFormatter.date(from: dateFormatter.string(from: d))
+                            //                            tmpEntry.addObject(dateFormatter.stringFromDate(d))
+                        }
+//                        let outputFormatter = DateFormatter()
+//                        outputFormatter.dateFormat = "yyy/MM/dd HH:mm"
+//                        let outputDateString = outputFormatter.stringFromDate(date)
                     }
-                    self.array.append($0)
+                    if let content = (($0 as! NSDictionary)["encoded"] as? String) {
+                        imagePath = self.getImagePath(xml: "<myTag>"+content+"</myTag>")
+                    } else if let content = (($0 as! NSDictionary)["description"] as? String) {
+                        imagePath = self.getImagePath(xml: "<myTag>"+content+"</myTag>")
+                    }
+                    
+                    
+                    self.array.append(Feed(title: title, imagePath: imagePath, link: link, createdAt: createdAt))
                 }
                 
 //                self.array = items
+                self.array.sort(by: { (a, b) -> Bool in
+                    a.createdAt.compare(b.createdAt) == .orderedDescending
+                })
                 self.tableView.reloadData()
             }
         }
@@ -82,11 +132,12 @@ extension ViewController1: UITableViewDataSource {
     func tableView(_ table: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = table.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TableViewCell
+        cell.setCell(feed: array[indexPath.row])
         // Tag番号 ２ で UILabel インスタンスの生成
 //        let label = cell.viewWithTag(1) as! UILabel
-        let title = (self.array[indexPath.row] as! NSDictionary)["title"] as! String
+//        let title = (self.array[indexPath.row] as! NSDictionary)["title"] as! String
 //        label.text = String(describing: title)
-        cell.titleLabel.text = title
+//        cell.titleLabel.text = title
         return cell
     }
     
@@ -99,11 +150,18 @@ extension ViewController1: UITableViewDataSource {
     func tableView(_ table: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.array.count
     }
+    
+    func getImagePath(xml: String) -> String? {
+        if let doc: XMLDocument = try! Kanna.XML(xml: xml, encoding: .utf8) {
+            let node = doc.css("img[src]").first
+            return node?["src"]
+        }
+    }
 }
 
 extension ViewController1: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let url = (self.array[indexPath.row] as! NSDictionary)["link"] as! String
+        let url = self.array[indexPath.row].link
         let transformedURL = URL(string: url)
         let safariViewController = SFSafariViewController(url: transformedURL!)
         
@@ -113,10 +171,14 @@ extension ViewController1: UITableViewDelegate {
 
 struct Feed {
     var title: String
+    var link: String
     var imagePath: String?
+    var createdAt: Date!
     
-    init(title: String, imagePath: String? = nil) {
+    init(title: String, imagePath: String? = nil, link: String, createdAt: Date) {
         self.title = title
         self.imagePath = imagePath
+        self.link = link
+        self.createdAt = createdAt
     }
 }

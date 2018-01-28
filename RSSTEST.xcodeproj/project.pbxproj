@@ -15,6 +15,8 @@
 		943BBC951FE5EA1E00B23FE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 943BBC941FE5EA1E00B23FE8 /* Assets.xcassets */; };
 		943BBC981FE5EA1E00B23FE8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 943BBC961FE5EA1E00B23FE8 /* LaunchScreen.storyboard */; };
 		944A8700201C484200447061 /* ViewController1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944A86FF201C484200447061 /* ViewController1.swift */; };
+		949D99C4201DA21B00272884 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949D99C3201DA21B00272884 /* ViewController2.swift */; };
+		949D99C6201DA24100272884 /* YoutubeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949D99C5201DA24100272884 /* YoutubeTableViewCell.swift */; };
 		94AF01011FE5F3F2005ED4F4 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 94AF01001FE5F3F2005ED4F4 /* libxml2.tbd */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +33,8 @@
 		943BBC971FE5EA1E00B23FE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		943BBC991FE5EA1E00B23FE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		944A86FF201C484200447061 /* ViewController1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController1.swift; sourceTree = "<group>"; };
+		949D99C3201DA21B00272884 /* ViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController2.swift; sourceTree = "<group>"; };
+		949D99C5201DA24100272884 /* YoutubeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeTableViewCell.swift; sourceTree = "<group>"; };
 		94AF01001FE5F3F2005ED4F4 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -85,6 +89,8 @@
 				943BBC991FE5EA1E00B23FE8 /* Info.plist */,
 				944A86FF201C484200447061 /* ViewController1.swift */,
 				941E4779201CD19700339065 /* TableViewCell.swift */,
+				949D99C3201DA21B00272884 /* ViewController2.swift */,
+				949D99C5201DA24100272884 /* YoutubeTableViewCell.swift */,
 			);
 			path = RSSTEST;
 			sourceTree = "<group>";
@@ -184,7 +190,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		47D6E9A1D259EA4F2B900A99 /* [CP] Copy Pods Resources */ = {
@@ -210,10 +216,14 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-RSSTEST/Pods-RSSTEST-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Kanna/Kanna.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kanna.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -227,8 +237,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				949D99C4201DA21B00272884 /* ViewController2.swift in Sources */,
 				944A8700201C484200447061 /* ViewController1.swift in Sources */,
 				941E477A201CD19700339065 /* TableViewCell.swift in Sources */,
+				949D99C6201DA24100272884 /* YoutubeTableViewCell.swift in Sources */,
 				943BBC901FE5EA1E00B23FE8 /* ViewController.swift in Sources */,
 				943BBC8E1FE5EA1E00B23FE8 /* AppDelegate.swift in Sources */,
 			);

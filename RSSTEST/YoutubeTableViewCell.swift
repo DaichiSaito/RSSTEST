@@ -1,5 +1,5 @@
 //
-//  TableViewCell.swift
+//  YoutubeTableViewCell.swift
 //  RSSTEST
 //
 //  Created by DaichiSaito on 2018/01/28.
@@ -7,18 +7,13 @@
 //
 
 import UIKit
-import AlamofireImage
-class TableViewCell: UITableViewCell {
 
+class YoutubeTableViewCell: UITableViewCell {
+
+    @IBOutlet weak var myImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
     
     @IBOutlet weak var createdAtLabel: UILabel!
-    @IBOutlet weak var myImageView: UIImageView! {
-        didSet {
-//            myImageView.contentMode = .scaleAspectFill
-        }
-    }
-    
-    @IBOutlet weak var titleLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -44,7 +39,7 @@ class TableViewCell: UITableViewCell {
         
         let formatter = DateFormatter()
         formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "yyyy/MM/dd HH:mm", options: 0, locale: Locale(identifier: "ja_JP"))
-//        print(formatter.string(from: Date())) // 2017年8月12日
+                print(formatter.string(from: Date())) // 2017年8月12日
         self.createdAtLabel.text = formatter.string(from: feed.createdAt)
         
     }
