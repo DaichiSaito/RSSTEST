@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import SafariServices
+import Kanna
 class ViewController1: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
@@ -20,8 +21,8 @@ class ViewController1: UIViewController {
         self.tableView.dataSource = self
         self.tableView.delegate = self
 
-//        fetchRSS(url: "http://golf1000.blog23.fc2.com/?xml")
-        fetchRSS(url: "http://www.analyze2005.com/mkblogneo/?feed=rss2")
+        fetchRSS(url: "http://golf1000.blog23.fc2.com/?xml")
+//        fetchRSS(url: "http://www.analyze2005.com/mkblogneo/?feed=rss2")
 //        fetchRSS(url: "http://blog.secret-golf.com/index.rdf")
 //        fetchRSS(url: "http://rssblog.ameba.jp/crenshaw2/rss20.xml")
 //        fetchRSS(url: "http://rssblog.ameba.jp/50shoulder/rss20.xml")
@@ -57,7 +58,14 @@ class ViewController1: UIViewController {
                 }
                 items.forEach {
 //                    print(($0 as! NSDictionary)["title"] as! String)
-                    print(($0 as! NSDictionary))
+                    print(($0 as! NSDictionary)["encoded"])
+                    let xml = "<myTag>" + (($0 as! NSDictionary)["encoded"] as! String) + "</myTag>"
+                    if let doc: XMLDocument = try! Kanna.XML(xml: xml, encoding: .utf8) {
+                        
+//                        doc.xpath("//*/img[1]div[@id='content']/div[@id='bodyContent']/div[@id='mw-content-text']")
+                        let node = doc.css("img[src]").first
+                        print(node?["src"])
+                    }
                     self.array.append($0)
                 }
                 
@@ -73,11 +81,12 @@ extension ViewController1: UITableViewDataSource {
     //各セルの要素を設定する
     func tableView(_ table: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = table.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = table.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TableViewCell
         // Tag番号 ２ で UILabel インスタンスの生成
-        let label = cell.viewWithTag(1) as! UILabel
+//        let label = cell.viewWithTag(1) as! UILabel
         let title = (self.array[indexPath.row] as! NSDictionary)["title"] as! String
-        label.text = String(describing: title)
+//        label.text = String(describing: title)
+        cell.titleLabel.text = title
         return cell
     }
     
@@ -99,5 +108,15 @@ extension ViewController1: UITableViewDelegate {
         let safariViewController = SFSafariViewController(url: transformedURL!)
         
         present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+struct Feed {
+    var title: String
+    var imagePath: String?
+    
+    init(title: String, imagePath: String? = nil) {
+        self.title = title
+        self.imagePath = imagePath
     }
 }
